@@ -53,7 +53,7 @@ export default function Home(props) {
           ];
         } else {
           products[value.product] = [
-            [value.month, value.acv, value.product, , value.revenue_type],
+            [value.month, value.acv, value.product, value.revenue_type],
           ];
         }
 
@@ -66,15 +66,38 @@ export default function Home(props) {
         });
       }
 
+      console.log(productdata);
+      // productdata.map((value) => console.log(value));
+
       const seriesData = [];
 
       for (let product in productdata) {
+        const productList = productdata[product].reduce((current, value) => {
+          if (current[value[0]]) {
+            current[value[0]] = [
+              value[0],
+              current[value[0]][1] + value[1],
+              value[2],
+              value[3],
+            ];
+          } else {
+            current[value[0]] = value;
+          }
+
+          return current;
+        }, {});
+
+        const productSeries = [];
+        for (const key in productList) {
+          productSeries.push(productList[key]);
+        }
+
         seriesData.push({
           name: product,
-          data: productdata[product],
+          // data: productdata[product],
+          data: productSeries,
         });
       }
-      console.log(seriesData);
 
       setSeries(seriesData);
     } else {
